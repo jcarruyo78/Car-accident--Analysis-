@@ -1,0 +1,306 @@
+
+<h2 class="sr-only">Road Accident KPI Dashboard showing 307,973 accidents and 417,883 casualties with breakdowns by severity, road type, weather, and vehicle type.</h2>
+
+<style>
+  .dash { font-family: var(--font-sans); padding: 0 0 2rem; }
+  .section-title { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-secondary); margin: 1.5rem 0 0.75rem; }
+  .kpi-grid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 10px; }
+  .kpi-card { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 14px 16px; }
+  .kpi-label { font-size: 12px; color: var(--color-text-secondary); margin-bottom: 4px; }
+  .kpi-value { font-size: 22px; font-weight: 500; color: var(--color-text-primary); line-height: 1.1; }
+  .kpi-sub { font-size: 11px; color: var(--color-text-tertiary); margin-top: 3px; }
+  .kpi-danger .kpi-value { color: #A32D2D; }
+  .kpi-amber .kpi-value { color: #854F0B; }
+  .kpi-info .kpi-value { color: #185FA5; }
+  .charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 14px; }
+  .chart-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 16px; }
+  .chart-title { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 12px; }
+  .legend-row { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; font-size: 11px; color: var(--color-text-secondary); }
+  .leg-dot { width: 9px; height: 9px; border-radius: 2px; display: inline-block; margin-right: 4px; }
+  .bar-list { display: flex; flex-direction: column; gap: 8px; }
+  .bar-item { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--color-text-secondary); }
+  .bar-label { width: 130px; flex-shrink: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .bar-track { flex: 1; background: var(--color-background-secondary); border-radius: 3px; height: 10px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 3px; }
+  .bar-val { width: 52px; text-align: right; flex-shrink: 0; font-variant-numeric: tabular-nums; }
+  .severity-ring { display: flex; align-items: center; gap: 16px; }
+  .wide-chart { margin-top: 14px; }
+</style>
+
+<div class="dash">
+  <div style="display:flex; align-items:baseline; gap:12px; padding: 0.25rem 0 0.5rem;">
+    <span style="font-size:18px; font-weight:500; color:var(--color-text-primary);">Road accident KPI dashboard</span>
+    <span style="font-size:12px; color:var(--color-text-secondary);">2021 · Great Britain</span>
+  </div>
+
+  <p class="section-title">Overview</p>
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-label">Total accidents</div>
+      <div class="kpi-value">307,973</div>
+      <div class="kpi-sub">All severities</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Total casualties</div>
+      <div class="kpi-value">417,883</div>
+      <div class="kpi-sub">1.36 per accident</div>
+    </div>
+    <div class="kpi-card kpi-danger">
+      <div class="kpi-label">Fatal accidents</div>
+      <div class="kpi-value">3,953</div>
+      <div class="kpi-sub">1.3% of total · 7,135 casualties</div>
+    </div>
+    <div class="kpi-card kpi-amber">
+      <div class="kpi-label">Serious accidents</div>
+      <div class="kpi-value">40,740</div>
+      <div class="kpi-sub">13.2% of total · 59,312 casualties</div>
+    </div>
+  </div>
+
+  <div class="charts-row">
+    <div class="chart-card">
+      <div class="chart-title">Casualties by severity</div>
+      <div class="legend-row">
+        <span><span class="leg-dot" style="background:#E24B4A;"></span>Fatal 1.7%</span>
+        <span><span class="leg-dot" style="background:#EF9F27;"></span>Serious 14.2%</span>
+        <span><span class="leg-dot" style="background:#378ADD;"></span>Slight 84.1%</span>
+      </div>
+      <div style="position:relative; height:200px;">
+        <canvas id="severityChart" role="img" aria-label="Doughnut chart showing slight 84.1%, serious 14.2%, fatal 1.7%">Slight 351,436; Serious 59,312; Fatal 7,135.</canvas>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-title">Urban vs rural split</div>
+      <div style="position:relative; height:200px; margin-top:24px;">
+        <canvas id="urbanChart" role="img" aria-label="Doughnut chart urban 64.5%, rural 35.5%">Urban 198,532; Rural 109,441.</canvas>
+      </div>
+      <div class="legend-row" style="justify-content:center; margin-top:10px;">
+        <span><span class="leg-dot" style="background:#534AB7;"></span>Urban 64.5%</span>
+        <span><span class="leg-dot" style="background:#9FE1CB;"></span>Rural 35.5%</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="charts-row">
+    <div class="chart-card">
+      <div class="chart-title">Accidents by road type</div>
+      <div class="bar-list">
+        <div class="bar-item">
+          <div class="bar-label">Single carriageway</div>
+          <div class="bar-track"><div class="bar-fill" style="width:100%;background:#378ADD;"></div></div>
+          <div class="bar-val">230,612</div>
+        </div>
+        <div class="bar-item">
+          <div class="bar-label">Dual carriageway</div>
+          <div class="bar-track"><div class="bar-fill" style="width:19.7%;background:#378ADD;"></div></div>
+          <div class="bar-val">45,467</div>
+        </div>
+        <div class="bar-item">
+          <div class="bar-label">Roundabout</div>
+          <div class="bar-track"><div class="bar-fill" style="width:9.1%;background:#378ADD;"></div></div>
+          <div class="bar-val">20,929</div>
+        </div>
+        <div class="bar-item">
+          <div class="bar-label">One way street</div>
+          <div class="bar-track"><div class="bar-fill" style="width:2.7%;background:#378ADD;"></div></div>
+          <div class="bar-val">6,197</div>
+        </div>
+        <div class="bar-item">
+          <div class="bar-label">Slip road</div>
+          <div class="bar-track"><div class="bar-fill" style="width:1.4%;background:#378ADD;"></div></div>
+          <div class="bar-val">3,234</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-title">Weather conditions</div>
+      <div class="bar-list">
+        <div class="bar-item">
+          <div class="bar-label">Fine, no high winds</div>
+          <div class="bar-track"><div class="bar-fill" style="width:100%;background:#1D9E75;"></div></div>
+          <div class="bar-val">244,496</div>
+        </div>
+        <div class="bar-item">
+          <div class="bar-label">Raining, no wind</div>
+          <div class="bar-track"><div class="bar-fill" style="width:14.3%;background:#1D9E75;"></div></div>
+          <div class="bar-val">34,877</div>
+        </div>
+        <div class="bar-item">
+          <div class="bar-label">Other</div>
+          <div class="bar-track"><div class="bar-fill" style="width:3.6%;background:#1D9E75;"></div></div>
+          <div class="bar-val">8,802</div>
+        </div>
+        <div class="bar-item">
+          <div class="bar-label">Snowing, no wind</div>
+          <div class="bar-track"><div class="bar-fill" style="width:2.0%;background:#1D9E75;"></div></div>
+          <div class="bar-val">4,839</div>
+        </div>
+        <div class="bar-item">
+          <div class="bar-label">Raining + high winds</div>
+          <div class="bar-track"><div class="bar-fill" style="width:1.4%;background:#1D9E75;"></div></div>
+          <div class="bar-val">3,526</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="charts-row">
+    <div class="chart-card">
+      <div class="chart-title">Road surface conditions</div>
+      <div style="position:relative; height:220px;">
+        <canvas id="surfaceChart" role="img" aria-label="Bar chart of road surface: Dry 208967, Wet or damp 81479, Frost or ice 12078, Snow 4758, Flood 374">Road surface accidents by condition.</canvas>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-title">Light conditions</div>
+      <div style="position:relative; height:220px;">
+        <canvas id="lightChart" role="img" aria-label="Bar chart of light conditions during accidents">Light conditions distribution.</canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="wide-chart chart-card">
+    <div class="chart-title">Accidents by day of week</div>
+    <div style="position:relative; height:180px;">
+      <canvas id="dayChart" role="img" aria-label="Bar chart showing accidents by day of week, Friday highest at 50,529">Day of week distribution.</canvas>
+    </div>
+  </div>
+
+  <p class="section-title">Top vehicle types involved</p>
+  <div class="bar-list">
+    <div class="bar-item">
+      <div class="bar-label" style="width:220px;">Car</div>
+      <div class="bar-track"><div class="bar-fill" style="width:100%;background:#534AB7;"></div></div>
+      <div class="bar-val">239,794</div>
+    </div>
+    <div class="bar-item">
+      <div class="bar-label" style="width:220px;">Van / Goods ≤3.5t</div>
+      <div class="bar-track"><div class="bar-fill" style="width:6.5%;background:#534AB7;"></div></div>
+      <div class="bar-val">15,695</div>
+    </div>
+    <div class="bar-item">
+      <div class="bar-label" style="width:220px;">Motorcycle >500cc</div>
+      <div class="bar-track"><div class="bar-fill" style="width:4.7%;background:#534AB7;"></div></div>
+      <div class="bar-val">11,226</div>
+    </div>
+    <div class="bar-item">
+      <div class="bar-label" style="width:220px;">Bus / Coach</div>
+      <div class="bar-track"><div class="bar-fill" style="width:3.6%;background:#534AB7;"></div></div>
+      <div class="bar-val">8,686</div>
+    </div>
+    <div class="bar-item">
+      <div class="bar-label" style="width:220px;">Motorcycle ≤125cc</div>
+      <div class="bar-track"><div class="bar-fill" style="width:2.9%;background:#534AB7;"></div></div>
+      <div class="bar-val">6,852</div>
+    </div>
+    <div class="bar-item">
+      <div class="bar-label" style="width:220px;">Goods ≥7.5t</div>
+      <div class="bar-track"><div class="bar-fill" style="width:2.7%;background:#534AB7;"></div></div>
+      <div class="bar-val">6,532</div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const isDark = matchMedia('(prefers-color-scheme: dark)').matches;
+const gridColor = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.07)';
+const textColor = isDark ? '#aaa' : '#666';
+
+new Chart(document.getElementById('severityChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Fatal','Serious','Slight'],
+    datasets: [{
+      data: [7135, 59312, 351436],
+      backgroundColor: ['#E24B4A','#EF9F27','#378ADD'],
+      borderWidth: 0,
+      hoverOffset: 4
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false, cutout: '68%',
+    plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ' ' + ctx.label + ': ' + ctx.parsed.toLocaleString() } } }
+  }
+});
+
+new Chart(document.getElementById('urbanChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Urban','Rural'],
+    datasets: [{
+      data: [198532, 109441],
+      backgroundColor: ['#534AB7','#5DCAA5'],
+      borderWidth: 0,
+      hoverOffset: 4
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false, cutout: '68%',
+    plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ' ' + ctx.label + ': ' + ctx.parsed.toLocaleString() } } }
+  }
+});
+
+new Chart(document.getElementById('surfaceChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Dry','Wet/damp','Frost/ice','Snow','Flood'],
+    datasets: [{
+      data: [208967, 81479, 12078, 4758, 374],
+      backgroundColor: ['#378ADD','#378ADD','#EF9F27','#B5D4F4','#85B7EB'],
+      borderRadius: 3, borderSkipped: false
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ' ' + ctx.parsed.y.toLocaleString() + ' accidents' } } },
+    scales: {
+      x: { ticks: { color: textColor, font: { size: 11 }, autoSkip: false }, grid: { display: false } },
+      y: { ticks: { color: textColor, font: { size: 11 }, callback: v => (v/1000)+'k' }, grid: { color: gridColor } }
+    }
+  }
+});
+
+new Chart(document.getElementById('lightChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Daylight','Dark-lit','Dark-unlit','Dark-unknown','Dark-unlit'],
+    datasets: [{
+      data: [227286, 60093, 16528, 2924, 1142],
+      backgroundColor: ['#EF9F27','#534AB7','#3C3489','#AFA9EC','#CECBF6'],
+      borderRadius: 3, borderSkipped: false
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ' ' + ctx.parsed.y.toLocaleString() + ' accidents' } } },
+    scales: {
+      x: { ticks: { color: textColor, font: { size: 10 }, autoSkip: false, maxRotation: 30 }, grid: { display: false } },
+      y: { ticks: { color: textColor, font: { size: 11 }, callback: v => (v/1000)+'k' }, grid: { color: gridColor } }
+    }
+  }
+});
+
+new Chart(document.getElementById('dayChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+    datasets: [{
+      data: [43918, 46386, 46381, 45649, 50529, 41566, 33544],
+      backgroundColor: ['#378ADD','#378ADD','#378ADD','#378ADD','#E24B4A','#85B7EB','#B5D4F4'],
+      borderRadius: 4, borderSkipped: false
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ' ' + ctx.parsed.y.toLocaleString() + ' accidents' } } },
+    scales: {
+      x: { ticks: { color: textColor, font: { size: 12 }, autoSkip: false }, grid: { display: false } },
+      y: { ticks: { color: textColor, font: { size: 11 }, callback: v => (v/1000)+'k' }, grid: { color: gridColor } }
+    }
+  }
+});
+</script>
